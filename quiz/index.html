@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Real or Phishing? Quiz</title>
+<style>
+  :root { --bg:#0d1117; --panel:#161b22; --line:#30363d; --text:#e6edf3; --muted:#8b949e; --ok:#3fb950; --bad:#f85149; --accent:#58a6ff; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 system-ui, sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:24px 16px 48px; }
+  h1 { font-size:1.5rem; margin:0 0 4px; }
+  .banner { border:1px solid var(--bad); color:var(--bad); padding:8px 12px; border-radius:6px; font-size:.85rem; margin:12px 0 20px; }
+  .meta { color:var(--muted); font-size:.9rem; display:flex; justify-content:space-between; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px; margin:12px 0; }
+  pre { white-space:pre-wrap; word-wrap:break-word; margin:0; font:14px/1.5 ui-monospace, Consolas, monospace; }
+  .stamp { color:var(--muted); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; margin-bottom:8px; }
+  .row { display:flex; gap:12px; }
+  button { flex:1; padding:12px; font-size:1rem; border-radius:6px; border:1px solid var(--line); background:var(--panel); color:var(--text); cursor:pointer; }
+  button:hover:not(:disabled) { border-color:var(--accent); }
+  button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  button:disabled { opacity:.5; cursor:default; }
+  .good { color:var(--ok); } .bad { color:var(--bad); }
+  .hidden { display:none; }
+  footer { color:var(--muted); font-size:.8rem; margin-top:32px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>Real or phishing?</h1>
+  <div class="banner" id="notice"></div>
+  <div id="app"></div>
+  <footer>Runs entirely in your browser. No data is sent, stored, or tracked.</footer>
+</main>
+<script>
+const DATA = {"title":"Real or phishing?","notice":"TRAINING SAMPLES — NOT REAL MESSAGES. All brands are fictional and all links are defused.","questions":[{"id":1,"channel":"Email","message":"From: Globex IT Helpdesk \u003chelpdesk@globex-secure-alerts.example.com>\nSubject: URGENT!! Password expires in 2 hours\n\nDear User, verify now or lose your mailbox: https://example.com/login","answer":"phishing","explanation":"Look-alike sender domain, generic greeting, extreme urgency and a threat. Go to the login page yourself and report the message."},{"id":2,"channel":"Email","message":"From: Globex Facilities \u003cfacilities@globex.example.com>\nSubject: Fire drill on Thursday 10:30\n\nHi all, the building fire drill is on Thursday at 10:30. Please use the nearest stairwell. No action needed online.","answer":"real","explanation":"Internal domain, expected topic, no link, no request for credentials or money. Not every message is a trap."},{"id":3,"channel":"Email","message":"From: Dana Whitfield \u003caccounts@vandelay-supplies.example.com>\nReply-To: dana.billing@example.net\nSubject: RE: Invoice 4471\n\nOur bank details changed. Please pay the new account in the attached Invoice_4471.pdf.html and keep this confidential.","answer":"phishing","explanation":"Bank-detail change, Reply-To mismatch, secrecy, and a double extension (.pdf.html). Verify by phone using a number already on file."},{"id":4,"channel":"SMS","message":"SwiftPost: your parcel could not be delivered. Pay a $1.99 redelivery fee within 24h: https://example.com/swiftpost-fee","answer":"phishing","explanation":"Small fee plus deadline is a card-theft hook. Check tracking on the carrier's official site or app."},{"id":5,"channel":"Push notification","message":"At 11:42 pm your phone shows \"Approve sign-in to Globex Mail?\" for the fourth time. You did not try to sign in. A text then arrives from \"Globex IT\" asking you to reply with the 6-digit code to stop the alerts.","answer":"phishing","explanation":"A prompt you did not start means someone has your password. Tap Deny, then reset your password and report it."},{"id":6,"channel":"Email","message":"From: Initech Payroll \u003cpayroll@initech.example.com>\nSubject: Your October payslip is available\n\nYour payslip is ready in the HR portal. Open the portal from your intranet bookmark. We never send payslips as attachments.","answer":"real","explanation":"Expected, no link to click, points you to a bookmark and states a clear policy. Telling you where NOT to expect things is a good sign."},{"id":7,"channel":"Email","message":"From: Alex Morgan \u003calex.morgan.ceo@example.net>\nSubject: Are you at your desk?\n\nI'm in a meeting and need a quick, discreet favour. Reply ASAP. Sent from my mobile.","answer":"phishing","explanation":"Executive name on an outside address, secrecy, urgency. Next step is usually gift cards. Verify through a known channel."},{"id":8,"channel":"Phone call","message":"A caller says: \"I'm from IT. We detected malware on your laptop. Please install this remote support tool so I can fix it, and don't mention it to colleagues.\"","answer":"phishing","explanation":"Unsolicited IT call, remote access request, and secrecy. Hang up and call the official helpdesk number."},{"id":9,"channel":"Email","message":"From: Globex Security \u003csecurity@globex.example.com>\nSubject: Reminder: annual awareness training\n\nPlease complete the annual training from the Learning page on the intranet before the end of the month. We will never ask for your password.","answer":"real","explanation":"Internal sender, no link, routes you to a known location. It tells you what the company never does."},{"id":10,"channel":"Email","message":"From: DocuBox via Jordan Lee \u003cshare@docubox-mail.example.org>\nSubject: Jordan shared \"Q4 Salary Review.xlsx\"\n\nOpen document: https://example.com/docubox/view. Sign in with your email provider.","answer":"phishing","explanation":"Tempting title, off-brand sender domain, and a sign-in request. Check with Jordan another way."},{"id":11,"channel":"Flyer / QR code","message":"A flyer taped in the lobby: \"Free coffee for staff! Scan to claim\" with a QR code and no company name.","answer":"phishing","explanation":"Anyone can post a QR code. You cannot read the destination before scanning; if you do, preview the URL. Report it to facilities or security."},{"id":12,"channel":"Email","message":"From: Marcus Hale \u003cmarcus.hale@initech-partners.example.net>\nSubject: Slides from the Lisbon panel\n\nGreat meeting you last week! Slides: https://example.com/shared/panel-slides. Could you sign the attached contract by tonight?","answer":"phishing","explanation":"Tailored to you, new contact, file link plus a same-day signature request. Verify the person and use approved sharing tools."}]};
+const app = document.getElementById('app');
+document.getElementById('notice').textContent = DATA.notice;
+let i = 0, score = 0, answered = false;
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text !== undefined) e.textContent = text;
+  return e;
+}
+
+function render() {
+  app.replaceChildren();
+  if (i >= DATA.questions.length) return renderResult();
+  const q = DATA.questions[i];
+  answered = false;
+
+  const meta = el('div', 'meta');
+  meta.append(el('span', '', 'Question ' + (i + 1) + ' of ' + DATA.questions.length), el('span', '', 'Score: ' + score));
+
+  const card = el('div', 'card');
+  card.append(el('div', 'stamp', 'EXAMPLE / TRAINING · ' + q.channel));
+  card.append(el('pre', '', q.message));
+
+  const row = el('div', 'row');
+  const bReal = el('button', '', 'Real');
+  const bPhish = el('button', '', 'Phishing');
+  row.append(bReal, bPhish);
+
+  const fb = el('div', 'card hidden');
+  const next = el('button', '', i + 1 === DATA.questions.length ? 'See results' : 'Next');
+  next.onclick = () => { i++; render(); };
+
+  function choose(pick) {
+    if (answered) return;
+    answered = true;
+    bReal.disabled = bPhish.disabled = true;
+    const right = pick === q.answer;
+    if (right) score++;
+    fb.replaceChildren(
+      el('strong', right ? 'good' : 'bad', right ? 'Correct' : 'Not quite'),
+      el('p', '', 'This was ' + (q.answer === 'real' ? 'a legitimate message' : 'phishing') + '. ' + q.explanation),
+      next
+    );
+    fb.classList.remove('hidden');
+    next.focus();
+  }
+  bReal.onclick = () => choose('real');
+  bPhish.onclick = () => choose('phishing');
+
+  app.append(meta, card, row, fb);
+}
+
+function renderResult() {
+  const card = el('div', 'card');
+  card.append(el('h2', '', 'You scored ' + score + ' / ' + DATA.questions.length));
+  card.append(el('p', '', 'Remember: pause, verify through another channel, report. Mistakes here are how we learn.'));
+  const again = el('button', '', 'Try again');
+  again.onclick = () => { i = 0; score = 0; render(); };
+  card.append(again);
+  app.append(card);
+}
+
+render();
+</script>
+</body>
+</html>

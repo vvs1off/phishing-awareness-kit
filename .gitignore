@@ -1,0 +1,17 @@
+# Secrets
+.env
+.env.*
+*.key
+*.pem
+
+# Logs
+*.log
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Dependencies
+node_modules/
